@@ -1,10 +1,9 @@
 {
-  "name": "tf",
-  "version": "0.0.0",
+  "name": "tailfront",
+  "version": "0.0.1",
   "description": "CLI client for distribution of Tailfront products.",
-  "bin": "./dist/index.js",
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com/@tailfront"
+  "bin": {
+    "tf": "dist/index.js"
   },
   "keywords": [
     "components",
