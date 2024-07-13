@@ -1,0 +1,23 @@
+{
+  "name": "tf",
+  "version": "0.0.0",
+  "description": "CLI client for distribution of Tailfront products.",
+  "bin": "./dist/index.js",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/@tailfront"
+  },
+  "keywords": [
+    "components",
+    "gui",
+    "ui",
+    "ux",
+    "figma",
+    "tailwind",
+    "tailfront"
+  ],
+  "author": {
+    "name": "Tailfront",
+    "url": "https://pixsellz.io"
+  },
+  "license": "MIT"
+}
