@@ -2,9 +2,7 @@
   "name": "tailfront",
   "version": "0.0.2",
   "description": "CLI client for distribution of Tailfront products.",
-  "bin": {
-    "tf": "dist/index.js"
-  },
+  "bin": "./dist/index.js",
   "keywords": [
     "components",
     "gui",
@@ -16,10 +14,20 @@
   ],
   "author": {
     "name": "Tailfront",
-    "url": "https://pixsellz.io"
+    "url": "https://pixsellz.io",
+    "email": "info@pixsellz.io"
   },
   "license": "MIT",
   "dependencies": {
-    "typescript": "^5.5.3"
+    "@types/fs-extra": "^11.0.4",
+    "@types/node": "^20.14.10",
+    "@types/prompts": "^2.4.9",
+    "chalk": "^4.1.2",
+    "commander": "^12.1.0",
+    "fs-extra": "^11.2.0",
+    "prompts": "^2.4.2",
+    "type-fest": "^4.21.0",
+    "typescript": "^5.5.3",
+    "zod": "^3.23.8"
   }
 }
