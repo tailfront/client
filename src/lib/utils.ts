@@ -4,7 +4,7 @@ import {type PackageJson} from 'type-fest';
 import chalk from 'chalk';
 
 const info = (): PackageJson => {
-  const packageJson = path.join('package.json');
+  const packageJson = path.join(__dirname, '../../package.json');
   return fs.readJSONSync(packageJson) as PackageJson;
 };
 const PKG = info();

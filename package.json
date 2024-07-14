@@ -1,6 +1,6 @@
 {
   "name": "tailfront",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "CLI client for distribution of Tailfront products.",
   "bin": "./dist/index.js",
   "keywords": [
