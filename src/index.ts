@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import {command as elements} from './commands/elements';
+import {command as themes} from './commands/themes';
 import {Command} from 'commander';
 import {PKG, log} from './lib/utils';
 
@@ -16,7 +17,9 @@ async function main() {
       'Display the client version'
     )
     .option('-V, --verbose', 'Enable verbose output', false);
-  program.addCommand(elements);
+  program
+    .addCommand(elements)
+    .addCommand(themes);
   log.tf();
   program.parse();
 }

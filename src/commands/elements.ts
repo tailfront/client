@@ -1,41 +1,36 @@
 import {Command} from 'commander';
-import {err, log} from './../lib/utils';
+import {err, log, Pkg, manifestf} from './../lib/utils';
 import {z} from 'zod';
 import path from 'path';
 import fs from 'fs';
 import prompts from 'prompts';
 import chalk from 'chalk';
 
-function isPackageInstalled(packageName: string): boolean {
-  try {
-      require.resolve(packageName);
-      return true;
-  } catch (e) {
-      return false;
-  }
-}
-
 const schema = z.object({
   components: z.array(z.string()).optional(),
   overwrite: z.boolean(),
+  deps: z.boolean(),
   path: z.string().optional(),
   verbose: z.boolean(),
   cwd: z.string(),
 });
 
 const REGISTRY = 'https://raw.githubusercontent.com/tailfront/elements/main/src/';
+const parse = Pkg.parse();
+const root = Pkg.root(parse);
 
 const command = new Command()
   .name('elements')
   .description('The foundational GUI elements that shape the enchanting world of Tailfront.')
   .argument('[components...]', 'Components to add')
   .option('-o, --overwrite', 'Overwrite existing files', false)
+  .option('-d, --deps', 'Automatically install dependencies', false)
   .option(
     '-c, --cwd <cwd>',
-    'Set working directory. Current directory (default)',
-    process.cwd(),
+    'Set working directory',
+    root,
   )
-  .option('-p, --path <path>', 'Set path to add components', 'src/components')
+  .option('-p, --path <path>', 'Set path to add components', `src/components`)
   .action(async (components, opts) => {
     try {
       const options = schema.parse({
@@ -106,21 +101,28 @@ const command = new Command()
         let manifest = '';
         if (jsdoc)
           manifest = jsdoc[0];
-        manifest = manifest
-          .replace(/\/\*|\*\//g, '')
-          .replace(/\*/g, '')
-          .replace(/(@\w+)/g, '\x1b[34m$1\x1b[0m')
-          .trim();
-        // fs.writeFileSync(save, content); // TEMP
-        log.ok(`${component} is added, printing manifest`);
+        fs.writeFileSync(save, content);
         if (!manifest) {
           log.info(`Empty manifest: ${component}`);
         } else {
-          // Install dependencies
-          console.log(isPackageInstalled('chalk'));
-          log.break();
-          console.log(`  ${manifest}`);
-          log.break();
+          if (!options.deps) {
+            const {deps} = await prompts({
+              type: 'confirm',
+              name: 'deps',
+              message: 'Install dependencies automatically?',
+              initial: false,
+            });
+            if (!deps) {
+              log.info(`Automatic dependency install is skipped.\nPlease install ${chalk.blue('@require')} packages.`);
+            } else {
+              Pkg.install(
+                Pkg.extract(/@require\s+([^\r\n]*)/g, manifest),
+                Pkg.list(parse)
+              );
+            }
+          }
+          log.ok(`${component} is added, printing manifest`);
+          manifestf(manifest);
         }
       }
     } catch (error) {

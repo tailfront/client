@@ -2,6 +2,7 @@ import path from 'path';
 import fs from 'fs-extra';
 import {type PackageJson} from 'type-fest';
 import chalk from 'chalk';
+import {execSync} from 'child_process';
 
 const info = (): PackageJson => {
   const packageJson = path.join(__dirname, '../../package.json');
@@ -61,4 +62,60 @@ const err = (error: unknown): void => {
   process.exit(1);
 };
 
-export {PKG, log, err};
+namespace Pkg {
+  export function root(lines: string[]): string {
+    return lines[0];
+  }
+  export function list(parse: string[]): string[] {
+    return parse.slice(1).map(line => {
+      const parts = line.split('node_modules/');
+      return parts[parts.length - 1];
+    });
+  }
+  export function parse(): string[] {
+    const ls = 'npm ls -p';
+    let raw: string = '';
+    try {
+      raw = execSync(ls).toString();
+    } catch (err) {}
+    return raw.trim().split('\n');
+  }
+  export function extract(regex: RegExp, src: string): string[] {
+    const pkgs: string[] = [];
+    let match: RegExpExecArray | null;
+    while ((match = regex.exec(src)) !== null) {
+      pkgs.push(match[1]);
+    }
+    return pkgs;
+  }
+  export function install(pkgs: string[], skip: string[]): void {
+    const miss = pkgs.filter(pkg => !skip.includes(pkg));
+    if (miss.length > 0) {
+      log.info(`Installing missing packages: ${miss}`);
+      for (const pkg of miss) {
+        try {
+          execSync(`npm i ${pkg} > /dev/null`, {stdio: 'inherit'});
+          log.ok(`Package installed: ${pkg}`);
+        } catch (error) {
+          log.failed(`Error installing package ${pkg}: ${error}`);
+        }
+      }
+    }
+    log.ok('Required packages are installed.');
+  }
+}
+
+const manifestf = (raw: string): void => {
+  if (raw) {
+    const format = raw
+      .replace(/\/\*|\*\//g, '')
+      .replace(/\*/g, '')
+      .replace(/(@\w+)/g, '\x1b[34m$1\x1b[0m')
+      .trim();
+    log.break();
+    console.log(`  ${format}`); // spaces are needed
+    log.break();
+  }
+}
+
+export {PKG, log, err, Pkg, manifestf};
