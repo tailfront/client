@@ -26,7 +26,7 @@ const command = new Command()
     'Set working directory. Current directory (default)',
     process.cwd(),
   )
-  .option('-p, --path <path>', 'Set path to add components')
+  .option('-p, --path <path>', 'Set path to add components', 'src/components')
   .action(async (components, opts) => {
     try {
       const options = schema.parse({
