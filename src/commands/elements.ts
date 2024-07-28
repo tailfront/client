@@ -6,6 +6,15 @@ import fs from 'fs';
 import prompts from 'prompts';
 import chalk from 'chalk';
 
+function isPackageInstalled(packageName: string): boolean {
+  try {
+      require.resolve(packageName);
+      return true;
+  } catch (e) {
+      return false;
+  }
+}
+
 const schema = z.object({
   components: z.array(z.string()).optional(),
   overwrite: z.boolean(),
@@ -102,11 +111,13 @@ const command = new Command()
           .replace(/\*/g, '')
           .replace(/(@\w+)/g, '\x1b[34m$1\x1b[0m')
           .trim();
-        fs.writeFileSync(save, content);
+        // fs.writeFileSync(save, content); // TEMP
         log.ok(`${component} is added, printing manifest`);
         if (!manifest) {
           log.info(`Empty manifest: ${component}`);
         } else {
+          // Install dependencies
+          console.log(isPackageInstalled('chalk'));
           log.break();
           console.log(`  ${manifest}`);
           log.break();
