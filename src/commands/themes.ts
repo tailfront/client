@@ -28,7 +28,7 @@ const command = new Command()
     'Set working directory',
     root,
   )
-  .option('-p, --path <path>', 'Set path to add themes', `var/themes`)
+  .option('-p, --path <path>', 'Set path to add themes', `config/themes`)
   .action(async (themes, opts) => {
     try {
       const options = schema.parse({
@@ -51,8 +51,6 @@ const command = new Command()
         log.ok(`Start downloading theme: ${theme}`, options.verbose);
         for (const name of ['preset.js', 'lib.js']) {
           const themeDir = path.join(dir, theme);
-          if (!fs.existsSync(themeDir))
-            await fs.mkdir(themeDir, {recursive: true}, () => {});
           const save = path.join(themeDir, name);
           if (fs.existsSync(save)) {
             log.ok(`Overwrite option check: ${theme}`, options.verbose);
@@ -80,6 +78,8 @@ const command = new Command()
             const response = await fetch(registryPath);
             switch (response.status) {
               case 200:
+                if (!fs.existsSync(themeDir))
+                  await fs.mkdir(themeDir, {recursive: true}, () => {});
                 log.ok(`Successfully downloaded: ${theme}/${name}`, options.verbose);
                 break;
               case 404:
