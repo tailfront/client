@@ -94,7 +94,7 @@ namespace Pkg {
       log.info(`Installing missing packages: ${miss}`);
       for (const pkg of miss) {
         try {
-          execSync(`npm i ${pkg} > /dev/null`, {stdio: 'inherit'});
+          execSync(`npm ${pkg} > /dev/null`, {stdio: 'inherit'});
           log.ok(`Package installed: ${pkg}`);
         } catch (error) {
           log.failed(`Error installing package ${pkg}: ${error}`);

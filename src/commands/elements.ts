@@ -113,10 +113,10 @@ const command = new Command()
               initial: false,
             });
             if (!deps) {
-              log.info(`Automatic dependency install is skipped.\nPlease install ${chalk.blue('@require')} packages.`);
+              log.info(`Automatic dependency install is skipped.\nPlease install ${chalk.blue('@npm')} packages.`);
             } else {
               Pkg.install(
-                Pkg.extract(/@require\s+([^\r\n]*)/g, manifest),
+                Pkg.extract(/@npm\s+([^\r\n]*)/g, manifest),
                 Pkg.list(parse)
               );
             }
