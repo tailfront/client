@@ -14,7 +14,7 @@ const schema = z.object({
   cwd: z.string(),
 });
 
-const REGISTRY = 'https://raw.githubusercontent.com/tailfront/themes/main/src/';
+const REGISTRY = 'https://raw.githubusercontent.com/tailfront/themes/main/src/themes/';
 const parse = Pkg.parse();
 const root = Pkg.root(parse);
 
